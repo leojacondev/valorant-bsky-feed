@@ -19,8 +19,41 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
     const postsToDelete = ops.posts.deletes.map((del) => del.uri)
     const postsToCreate = ops.posts.creates
       .filter((create) => {
-        // only alf-related posts
-        return create.record.text.toLowerCase().includes('alf')
+        if (!create.record.langs?.includes('pt')) return false
+        
+        const keywords = [
+          "valorant",
+          "vct",
+          "loud",
+          "leviatan",
+          "mibr",
+          "furia",
+          "aspas",
+          "riot",
+          "liquid",
+          "less",
+          "saadhak",
+          "mwzera",
+          "tuyz",
+          "caua",
+          "cauazin"
+        ]
+
+        const excludedKeywords = [
+          "mutuals",
+          "moots",
+          "sdv",
+          "sdvv",
+          "follow trick",
+          "trick"
+        ]
+        
+
+        return keywords.some(
+          (keyword) => create.record.text.toLocaleLowerCase().includes(keyword)
+          &&
+          !excludedKeywords.some((keyword) => create.record.text.toLocaleLowerCase().includes(keyword))
+        );
       })
       .map((create) => {
         // map alf-related posts to a db row
