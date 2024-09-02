@@ -22,21 +22,23 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         if (!create.record.langs?.includes('pt')) return false
         
         const keywords = [
-          "valorant",
-          "vct",
-          "loud",
-          "leviatan",
-          "mibr",
-          "furia",
-          "aspas",
-          "riot",
-          "liquid",
-          "less",
-          "saadhak",
-          "mwzera",
-          "tuyz",
-          "caua",
-          "cauazin"
+          /\bvaloran\b/,
+          /\bvct\b/,
+          /\bloud\b/,
+          /\bleviantan\b/,
+          /\blev\b/,
+          /\bmibr\b/,
+          /\bfuria\b/,
+          /\baspas\b/,
+          /\briot\b/,
+          /\bteam liquid\b/,
+          /\bsaadhak\b/,
+          /\bmwzera\b/,
+          /\btuyz\b/,
+          /\bcauazin\b/,
+          /\bloud.gg\b/,
+          /\bfuria.gg\b/,
+          /\bvalorant champions\b/
         ]
 
         const excludedKeywords = [
@@ -50,7 +52,7 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         
 
         return keywords.some(
-          (keyword) => create.record.text.toLocaleLowerCase().includes(keyword)
+          (keyword) => keyword.test(create.record.text)
           &&
           !excludedKeywords.some((keyword) => create.record.text.toLocaleLowerCase().includes(keyword))
         );
