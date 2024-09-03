@@ -12,9 +12,9 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
     // This logs the text of every post off the firehose.
     // Just for fun :)
     // Delete before actually using
-    for (const post of ops.posts.creates) {
-      console.log(post.record.text)
-    }
+//    for (const post of ops.posts.creates) {
+//      console.log(post.record.text)
+//    }
 
     const postsToDelete = ops.posts.deletes.map((del) => del.uri)
     const postsToCreate = ops.posts.creates
@@ -31,14 +31,12 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
           /\bfuria\b/,
           /\baspas\b/,
           /\briot\b/,
-          /\bteam liquid\b/,
           /\bsaadhak\b/,
           /\bmwzera\b/,
           /\btuyz\b/,
           /\bcauazin\b/,
           /\bloud.gg\b/,
-          /\bfuria.gg\b/,
-          /\bvalorant champions\b/
+          /\bfuria.gg\b/
         ]
 
         const excludedKeywords = [
@@ -51,11 +49,9 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         ]
         
 
-        return keywords.some(
-          (keyword) => keyword.test(create.record.text)
-          &&
-          !excludedKeywords.some((keyword) => create.record.text.toLocaleLowerCase().includes(keyword))
-        );
+        return (keywords.some((key) => key.test(create.record.text))
+		&& !excludedKeywords.some((key) => create.record.text.toLowerCase().includes(key))
+	)
       })
       .map((create) => {
         // map alf-related posts to a db row
@@ -67,6 +63,12 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
       })
 
     if (postsToDelete.length > 0) {
+
+    for (const post of postsToCreate) {
+        console.log(post)
+     }
+
+
       await this.db
         .deleteFrom('post')
         .where('uri', 'in', postsToDelete)
