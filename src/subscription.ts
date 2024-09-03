@@ -34,7 +34,7 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
           /\blev\b/,
           /\bmibr\b/,
           /\bfuria\b/,
-          /\baspas\b/,
+          /\baspaszin\b/,
           /\briot\b/,
           /\bsaadhak\b/,
           /\bmwzera\b/,
