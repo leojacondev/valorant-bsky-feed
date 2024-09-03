@@ -20,6 +20,11 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
     const postsToCreate = ops.posts.creates
       .filter((create) => {
         if (!create.record.langs?.includes('pt')) return false
+
+	const normalText = [
+	  "valorant",
+	  "vct"
+	]
         
         const keywords = [
           /\bvaloran\b/,
@@ -49,7 +54,9 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         ]
         
 
-        return (keywords.some((key) => key.test(create.record.text))
+        return ((keywords.some((key) => key.test(create.record.text))
+	||	normalText.some((key) => create.record.text.toLowerCase().includes(key))
+	)
 		&& !excludedKeywords.some((key) => create.record.text.toLowerCase().includes(key))
 	)
       })
@@ -63,18 +70,17 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
       })
 
     if (postsToDelete.length > 0) {
-
-    for (const post of postsToCreate) {
-        console.log(post)
-     }
-
-
       await this.db
         .deleteFrom('post')
         .where('uri', 'in', postsToDelete)
         .execute()
     }
     if (postsToCreate.length > 0) {
+
+      for (const post of postsToCreate) {
+        console.log(post)
+      }
+
       await this.db
         .insertInto('post')
         .values(postsToCreate)
